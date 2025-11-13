@@ -1,13 +1,23 @@
 name: Deploy autotest to ShinServer
 
+
 on:
   push:
     branches:
-      - main   # ★codeX / VSCode から push しているブランチ名に合わせる（main ならこのままでOK）
+      - main  # ★codeX / VSCode から push しているブランチ名に合わせる
 
+      
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    # ここで secrets を環境変数にまとめておく
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
 
     steps:
       # リポジトリのコードを取得
@@ -17,27 +27,26 @@ jobs:
       # SSH秘密鍵を書き出し
       - name: Setup SSH key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key
+          echo "$SSH_PRIVATE_KEY" > key
           chmod 600 key
 
-      # 接続テスト（ログで確認用）
+      # 接続テスト（ここで成功すれば SSH 周りはOK）
       - name: Test SSH connection
-      # 失敗したらここで止まるので、成功してるならSSH設定はOK
         run: |
           ssh -i key \
             -o UserKnownHostsFile=/dev/null \
             -o StrictHostKeyChecking=no \
-            -p ${{ secrets.SSH_PORT }} \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo Connected to $(hostname)"
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" "echo 'Connected to ' \$(hostname)"
 
-      # デプロイ前にサーバー側のパスを表示（デバッグ用）
+      # デプロイ前にサーバー側の状態を確認（ログ用）
       - name: Show current files on server (before deploy)
         run: |
           ssh -i key \
             -o UserKnownHostsFile=/dev/null \
             -o StrictHostKeyChecking=no \
-            -p ${{ secrets.SSH_PORT }} \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo '=== BEFORE ==='; ls -al ${{ secrets.DEPLOY_PATH }}"
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" "echo '=== BEFORE ==='; pwd; ls -al \"$DEPLOY_PATH\""
 
       # autotest ディレクトリを rsync でデプロイ
       - name: Deploy autotest via rsync
@@ -45,15 +54,15 @@ jobs:
           rsync -auzrv \
             --exclude '.git' \
             --exclude '.github' \
-            ./autotest/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/ \
-            -e "ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }}"
+            autotest/ \
+            "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/" \
+            -e "ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $SSH_PORT"
 
-      # デプロイ後の状態を確認（ログに反映されているかチェック）
+      # デプロイ後の状態を確認（ログで index.html が見えるかチェック）
       - name: Show current files on server (after deploy)
         run: |
           ssh -i key \
             -o UserKnownHostsFile=/dev/null \
             -o StrictHostKeyChecking=no \
-            -p ${{ secrets.SSH_PORT }} \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo '=== AFTER ==='; ls -al ${{ secrets.DEPLOY_PATH }}"
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" "echo '=== AFTER ==='; ls -al \"$DEPLOY_PATH\""
