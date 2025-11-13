@@ -1,12 +1,11 @@
 name: Deploy autotest to ShinServer
 
-
 on:
   push:
     branches:
-      - main  # ★codeX / VSCode から push しているブランチ名に合わせる
+      - main  # へえ★codeX / VSCode から push しているブランチ名に合わせる
 
-      
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
