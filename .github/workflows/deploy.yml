@@ -53,7 +53,7 @@ jobs:
           rsync -auzrv \
             --exclude '.git' \
             --exclude '.github' \
-            autotest/ \
+            ./ \
             "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/" \
             -e "ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $SSH_PORT"
 
