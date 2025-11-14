@@ -2,10 +2,37 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>autotest テスト</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>GitHub Actions 自動デプロイ成功！</h1>
-    <p>poおほむむむこのページが表示されればOKです。</p>
+    <main>
+        <div class="badge">Deploy Complete</div>
+        <h1><span>GitHub Actions</span> 自動デプロイ成功</h1>
+        <p>WindowsのVSCodeでまとめた最新コミットが、レンタルサーバーまでスマートに届きました。シンプルなモノクロ演出で、静かな余裕と安定感を感じてくださいね。</p>
+
+        <div class="status-board" role="status" aria-live="polite">
+            <article class="status-card">
+                <p class="status-label">最新ブランチ</p>
+                <p class="status-value">main（テストOK）</p>
+            </article>
+            <article class="status-card">
+                <p class="status-label">最終デプロイ</p>
+                <p class="status-value">ほんの数分前</p>
+            </article>
+            <article class="status-card">
+                <p class="status-label">レンタルサーバー</p>
+                <p class="status-value">稼働中・安定</p>
+            </article>
+        </div>
+
+        <div class="actions">
+            <a href="#" aria-label="成果を共有する">進捗を共有</a>
+            <a href="#" aria-label="さらに改良する">次の調整へ</a>
+        </div>
+
+        <footer>iPhoneチェックも視認性バッチリ</footer>
+    </main>
 </body>
 </html>
