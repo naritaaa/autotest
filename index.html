@@ -2,10 +2,238 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>autotest テスト</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            font-size: clamp(14px, 0.9vw + 12px, 18px);
+            --bg-deep: #050608;
+            --bg-soft: #0b0d11;
+            --panel-base: rgba(18, 21, 28, 0.86);
+            --panel-highlight: rgba(35, 39, 48, 0.68);
+            --border-soft: rgba(255, 255, 255, 0.06);
+            --border-strong: rgba(255, 255, 255, 0.16);
+            --text-main: #f4f6fb;
+            --text-dim: rgba(244, 246, 251, 0.68);
+            --accent-soft: rgba(117, 125, 142, 0.32);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: clamp(2.4rem, 4vw, 4rem) clamp(1.6rem, 6vw, 4rem);
+            font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
+            color: var(--text-main);
+            background: radial-gradient(circle at 12% 18%, rgba(117, 125, 142, 0.22), transparent 50%),
+                radial-gradient(circle at 82% 8%, rgba(117, 125, 142, 0.12), transparent 60%),
+                linear-gradient(140deg, var(--bg-soft), var(--bg-deep));
+            background-size: 200% 200%;
+            animation: drift 32s ease-in-out infinite;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(155deg, rgba(117, 125, 142, 0.12), transparent 70%);
+            mix-blend-mode: screen;
+            opacity: 0.45;
+        }
+
+        main {
+            position: relative;
+            width: min(640px, 100%);
+            padding: clamp(2.4rem, 4vw, 3.2rem);
+            border-radius: clamp(26px, 5vw, 36px);
+            background: linear-gradient(150deg, var(--panel-base), var(--panel-highlight));
+            color: inherit;
+            text-align: center;
+            box-shadow: 0 26px 90px rgba(2, 3, 5, 0.75);
+            border: 1px solid var(--border-soft);
+            overflow: hidden;
+        }
+
+        @supports (backdrop-filter: blur(22px)) {
+            main {
+                backdrop-filter: blur(22px);
+                background: color-mix(in srgb, rgba(18, 21, 28, 0.92) 88%, transparent);
+            }
+        }
+
+        main::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(140deg, var(--accent-soft), transparent 60%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6em;
+            padding: 0.55em 1em;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            color: inherit;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+        }
+
+        h1 {
+            margin: clamp(1.4rem, 3vw, 2rem) 0 0.6rem;
+            font-size: clamp(2.1rem, 2vw + 1.8rem, 3rem);
+            line-height: 1.18;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: inherit;
+        }
+
+        h1 span {
+            display: inline-block;
+            padding: 0 0.2em;
+            border-bottom: 2px solid currentColor;
+        }
+
+        p {
+            margin: 0 auto;
+            margin-top: clamp(1.2rem, 2vw, 1.8rem);
+            max-width: 46ch;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            color: var(--text-dim);
+        }
+
+        .status-board {
+            margin-top: clamp(1.8rem, 3vw, 2.4rem);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            text-align: left;
+        }
+
+        .status-card {
+            padding: 1.1rem 1.25rem 1.25rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            color: inherit;
+            border: 1px solid var(--border-soft);
+        }
+
+        .status-label {
+            font-size: 0.76rem;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .status-value {
+            margin-top: 0.5rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 0.02em;
+            color: var(--text-main);
+        }
+
+        .actions {
+            margin-top: clamp(2rem, 3vw, 2.6rem);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .actions a {
+            text-decoration: none;
+            padding: 0.75rem 1.6rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.96rem;
+            letter-spacing: 0.04em;
+            color: var(--text-main);
+            border: 1px solid var(--border-strong);
+            background: rgba(255, 255, 255, 0.08);
+            transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease, border-color 220ms ease;
+        }
+
+        .actions a:hover,
+        .actions a:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.26);
+        }
+
+        footer {
+            margin-top: clamp(1.8rem, 4vw, 2.8rem);
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        @keyframes drift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @media (max-width: 520px) {
+            main {
+                padding: clamp(2rem, 6vw, 2.4rem);
+            }
+
+            h1 {
+                font-size: clamp(1.8rem, 9vw, 2.4rem);
+            }
+
+            .status-board {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>GitHub Actions 自動デプロイ成功！</h1>
-    <p>poおほむむむこのページが表示されればOKです。</p>
+    <main>
+        <div class="badge">Deploy Complete</div>
+        <h1><span>GitHub Actions</span> 自動デプロイ成功</h1>
+        <p>WindowsのVSCodeでまとめた最新コミットが、レンタルサーバーまでスマートに届きました。シンプルなモノクロ演出で、静かな余裕と安定感を感じてくださいね。</p>
+
+        <div class="status-board" role="status" aria-live="polite">
+            <article class="status-card">
+                <p class="status-label">最新ブランチ</p>
+                <p class="status-value">main（テストOK）</p>
+            </article>
+            <article class="status-card">
+                <p class="status-label">最終デプロイ</p>
+                <p class="status-value">ほんの数分前</p>
+            </article>
+            <article class="status-card">
+                <p class="status-label">レンタルサーバー</p>
+                <p class="status-value">稼働中・安定</p>
+            </article>
+        </div>
+
+        <div class="actions">
+            <a href="#" aria-label="成果を共有する">進捗を共有</a>
+            <a href="#" aria-label="さらに改良する">次の調整へ</a>
+        </div>
+
+        <footer>iPhoneチェックも視認性バッチリ</footer>
+    </main>
 </body>
 </html>
