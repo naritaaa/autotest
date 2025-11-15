@@ -20,8 +20,8 @@
             gap: 1.5rem;
             padding: 3rem 1.5rem;
             font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
-            background: #ffffff;
-            color: #1f2937;
+            background: #000000;
+            color: #f9fafb;
         }
 
         h1 {
@@ -29,25 +29,68 @@
             font-size: clamp(1.9rem, 2.5vw + 1rem, 2.8rem);
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: #1f2937;
+            color: #e5e7eb;
+            text-align: center;
         }
 
         .message {
             margin: 0;
             line-height: 1.7;
             font-size: 1.05rem;
+            text-align: center;
         }
 
         .updated {
             margin: 0;
             font-size: 0.95rem;
-            color: #4b5563;
+            color: #9ca3af;
+        }
+
+        .timestamp {
+            display: block;
+            margin-top: 0.35rem;
+            font-size: 0.85rem;
+            color: #6b7280;
         }
     </style>
 </head>
 <body>
-    <h1>GitHub Actions 自動デプロイ成功！</h1>
-    <p class="message">ねるか</p>
-    <p class="updated">最終更新: 2025年11月15日 08:40 (UTC)</p>
+    <h1 data-with-timestamp="heading">GitHub Actions 自動デプロイ成功！</h1>
+    <p class="message" data-with-timestamp="message">ねるか</p>
+    <p class="updated" data-with-timestamp="updated">最終更新: 2025年11月15日 08:40 (UTC)</p>
+
+    <script>
+        (function () {
+            const formatter = new Intl.DateTimeFormat("ja-JP", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+                timeZone: "Asia/Tokyo"
+            });
+
+            const now = new Date();
+            const formatted = formatter.format(now).replace(/\//g, "-");
+
+            document.querySelectorAll("[data-with-timestamp]").forEach((element) => {
+                const label = element.dataset.withTimestamp;
+                const timestamp = document.createElement("span");
+                timestamp.className = "timestamp";
+
+                if (label === "heading") {
+                    timestamp.textContent = `生成時刻 (JST): ${formatted}`;
+                } else if (label === "message") {
+                    timestamp.textContent = `メッセージ更新: ${formatted}`;
+                } else {
+                    timestamp.textContent = `タイムスタンプ: ${formatted}`;
+                }
+
+                element.appendChild(timestamp);
+            });
+        })();
+    </script>
 </body>
 </html>
