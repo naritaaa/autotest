@@ -6,13 +6,7 @@
     <title>autotest テスト</title>
     <style>
         :root {
-            color-scheme: light dark;
-            --bg-gradient: linear-gradient(135deg, #4f8ef7 0%, #8a4ff7 100%);
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --card-bg-dark: rgba(20, 24, 32, 0.85);
-            --text-color: #1f2937;
-            --text-color-dark: #f3f4f6;
-            --accent-color: #ffd166;
+            color-scheme: only light;
             font-size: clamp(14px, 1.1vw + 12px, 18px);
         }
 
@@ -20,33 +14,14 @@
             margin: 0;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 1.5rem;
             padding: 3rem 1.5rem;
             font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
-            background: var(--bg-gradient);
-            background-size: 200% 200%;
-            animation: gradientShift 18s ease infinite;
-        }
-
-        main {
-            width: min(520px, 100%);
-            padding: clamp(1.8rem, 3vw, 2.8rem);
-            border-radius: 24px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
-            color: var(--text-color);
-            background: var(--card-bg);
-            text-align: center;
-            transform: translateY(12px);
-            animation: floatIn 700ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            main {
-                background: var(--card-bg-dark);
-                color: var(--text-color-dark);
-            }
+            background: #ffffff;
+            color: #1f2937;
         }
 
         h1 {
@@ -54,59 +29,25 @@
             font-size: clamp(1.9rem, 2.5vw + 1rem, 2.8rem);
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: var(--accent-color);
-            text-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            color: #1f2937;
         }
 
-        p {
-            margin-top: clamp(1.2rem, 2vw, 1.8rem);
+        .message {
+            margin: 0;
             line-height: 1.7;
             font-size: 1.05rem;
-            color: inherit;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6em;
-            padding: 0.55em 1em;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.22);
-            color: inherit;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            font-size: 0.78rem;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .badge {
-                background: rgba(255, 255, 255, 0.08);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-            }
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes floatIn {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+        .updated {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #4b5563;
         }
     </style>
 </head>
 <body>
     <h1>GitHub Actions 自動デプロイ成功！</h1>
-    <p>ねるか</p>
+    <p class="message">ねるか</p>
+    <p class="updated">最終更新: 2025年11月15日 08:40 (UTC)</p>
 </body>
 </html>
